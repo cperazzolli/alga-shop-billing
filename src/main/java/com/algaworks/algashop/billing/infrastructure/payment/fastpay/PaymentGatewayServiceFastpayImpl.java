@@ -12,13 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @ConditionalOnProperty(name="algashop.integrations.payment.provider", havingValue = "FASTPAY")
 @RequiredArgsConstructor
-public class PaymentGatewayFastpayImpl implements PaymentGatewayService {
+public class PaymentGatewayServiceFastpayImpl implements PaymentGatewayService {
 
     private final FastpayPaymentAPIClient fastpayPaymentAPIClient;
     private final CreditCardRepository  creditCardRepository;

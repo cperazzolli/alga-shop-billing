@@ -1,6 +1,7 @@
 package com.algaworks.algashop.billing.infrastructure.creditcard.fastpay;
 
 import com.algaworks.algashop.billing.domain.model.creditcard.LimitedCreditCard;
+import com.algaworks.algashop.billing.infrastructure.AbastracFastpayIT;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +14,10 @@ import java.util.UUID;
 
 @SpringBootTest
 @Import(FastpayCreditCardTokenizationAPIClientConfig.class)
-class CreditCardProviderServiceFastpayImplIT {
+class CreditCardProviderServiceFastpayImplIT extends AbastracFastpayIT {
 
     @Autowired
     private CreditCardProviderServiceFastpayImpl creditCardProvider;
-
-    @Autowired
-    private FastpayCreditCardTokenizationAPIClient tokenizationAPIClient;
-
-    private static final UUID validCustomerId = UUID.randomUUID();
-
-    private static final String alwaysPaidCardNumber = "4622943127011022";
 
     @Test
     public void shouldRegisterCreditCard() {
@@ -49,21 +43,6 @@ class CreditCardProviderServiceFastpayImplIT {
         Optional<LimitedCreditCard> possibleCreditCard = creditCardProvider.findById(limitedCreditCard.getGatewayCode());
 
         Assertions.assertThat(possibleCreditCard).isEmpty();
-    }
-
-    private LimitedCreditCard registerCard() {
-        FastpayTokenizationInput input = FastpayTokenizationInput.builder()
-                .number(alwaysPaidCardNumber)
-                .cvv("222")
-                .expMonth(1)
-                .holderName("John Doe")
-                .holderDocument("12345")
-                .expYear(Year.now().getValue() + 5)
-                .build();
-
-        FastpayTokenizedCreditCardModel response = tokenizationAPIClient.tokenize(input);
-        LimitedCreditCard limitedCreditCard = creditCardProvider.register(validCustomerId, response.getTokenizedCard());
-        return limitedCreditCard;
     }
 
 }
